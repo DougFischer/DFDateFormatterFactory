@@ -42,17 +42,19 @@
 #pragma mark NSDateFormatter Initialization Methods
 
 - (NSDateFormatter *)dateFormatterWithFormat:(NSString *)format andLocale:(NSLocale *)locale {
-    NSString *key = [NSString stringWithFormat:@"%@|%@", format, locale.localeIdentifier];
-    
-    NSDateFormatter *dateFormatter = [loadedDataFormatters objectForKey:key];
-    if (!dateFormatter) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        dateFormatter.dateFormat = format;
-        dateFormatter.locale = locale;
-        [loadedDataFormatters setObject:dateFormatter forKey:key];
+    @synchronized(self) {
+        NSString *key = [NSString stringWithFormat:@"%@|%@", format, locale.localeIdentifier];
+        
+        NSDateFormatter *dateFormatter = [loadedDataFormatters objectForKey:key];
+        if (!dateFormatter) {
+            dateFormatter = [[NSDateFormatter alloc] init];
+            dateFormatter.dateFormat = format;
+            dateFormatter.locale = locale;
+            [loadedDataFormatters setObject:dateFormatter forKey:key];
+        }
+        
+        return dateFormatter;
     }
-    
-    return dateFormatter;
 }
 
 - (NSDateFormatter *)dateFormatterWithFormat:(NSString *)format andLocaleIdentifier:(NSString *)localeIdentifier {    
