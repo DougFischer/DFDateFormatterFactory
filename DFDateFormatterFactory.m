@@ -61,4 +61,35 @@
     return [self dateFormatterWithFormat:format andLocale:[[NSLocale alloc] initWithLocaleIdentifier:localeIdentifier]];
 }
 
+- (NSDateFormatter *)dateFormatterWithFormat:(NSString *)format
+{
+    return [self dateFormatterWithFormat:format andLocale:[NSLocale currentLocale]];
+}
+
+- (NSDateFormatter *)dateFormatterWithDateStyle:(NSDateFormatterStyle)dateStyle timeStyle:(NSDateFormatterStyle)timeStyle andLocale:(NSLocale *)locale {
+    @synchronized(self) {
+        NSString *key = [NSString stringWithFormat:@"d%i|t%i%@", dateStyle, timeStyle, locale.localeIdentifier];
+        
+        NSDateFormatter *dateFormatter = [loadedDataFormatters objectForKey:key];
+        if (!dateFormatter) {
+            dateFormatter = [[NSDateFormatter alloc] init];
+            dateFormatter.dateStyle = dateStyle;
+            dateFormatter.timeStyle = timeStyle;
+            dateFormatter.locale = locale;
+            [loadedDataFormatters setObject:dateFormatter forKey:key];
+        }
+        
+        return dateFormatter;
+    }
+
+}
+
+- (NSDateFormatter *)dateFormatterWithDateStyle:(NSDateFormatterStyle)dateStyle timeStyle:(NSDateFormatterStyle)timeStyle andLocaleIdentifier:(NSString *)localeIdentifier {
+    return [self dateFormatterWithDateStyle:dateStyle timeStyle:timeStyle andLocale:[[NSLocale alloc] initWithLocaleIdentifier:localeIdentifier]];
+}
+
+- (NSDateFormatter *)dateFormatterWithDateStyle:(NSDateFormatterStyle)dateStyle andTimeStyle:(NSDateFormatterStyle)timeStyle {
+    return [self dateFormatterWithDateStyle:dateStyle timeStyle:timeStyle andLocale:[NSLocale currentLocale]];
+}
+
 @end
