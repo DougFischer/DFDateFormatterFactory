@@ -27,3 +27,7 @@ NSDateFormatter *brazilianDateFormatter = [[DFDateFormatterFactory sharedFactory
 ##Development
 
 I'm using `DFDateFormatterFactory` in production apps since months ago without any issues, but you are really welcome to suggest improvements or report bugs.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/DougFischer/dfdateformatterfactory/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
