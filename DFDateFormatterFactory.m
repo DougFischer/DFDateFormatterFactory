@@ -8,7 +8,10 @@
 
 #import "DFDateFormatterFactory.h"
 
-#define CACHE_LIMIT 15;
+// Define the default cache limit only if not defined by the host application code
+#ifndef DFDATEFORMATTERFACTORY_CACHE_LIMIT
+#define DFDATEFORMATTERFACTORY_CACHE_LIMIT 15
+#endif
 
 @implementation DFDateFormatterFactory
 
@@ -17,7 +20,7 @@
     self = [super init];
     if (self) {
         loadedDataFormatters = [[NSCache alloc] init];
-        loadedDataFormatters.countLimit = CACHE_LIMIT;
+        loadedDataFormatters.countLimit = DFDATEFORMATTERFACTORY_CACHE_LIMIT;
     }
     return self;
 }
@@ -68,7 +71,7 @@
 
 - (NSDateFormatter *)dateFormatterWithDateStyle:(NSDateFormatterStyle)dateStyle timeStyle:(NSDateFormatterStyle)timeStyle andLocale:(NSLocale *)locale {
     @synchronized(self) {
-        NSString *key = [NSString stringWithFormat:@"d%i|t%i%@", dateStyle, timeStyle, locale.localeIdentifier];
+        NSString *key = [NSString stringWithFormat:@"d%lu|t%lu%@", (unsigned long)dateStyle, (unsigned long)timeStyle, locale.localeIdentifier];
         
         NSDateFormatter *dateFormatter = [loadedDataFormatters objectForKey:key];
         if (!dateFormatter) {
